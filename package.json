@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright test & playwright show-report",
+    "debug": "playwright test --debug"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -11,5 +15,8 @@
   "devDependencies": {
     "@playwright/test": "^1.57.0",
     "@types/node": "^24.10.1"
+  },
+  "dependencies": {
+    "lorem-ipsum": "^2.0.8"
   }
 }
