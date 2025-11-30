@@ -1,42 +1,24 @@
 import { test } from "@playwright/test";
-import { generateRandomNameAndEmail, selectRandomFromArray } from "../generators";
-import { checkTextElementIsVisible } from "../helpers";
+import { generateRandomUser, selectRandomFromArray } from "../utils";
+import { checkTextElementIsVisible, signUp } from "./helpers";
 import { setTimeout } from "timers/promises";
+import { WebPage } from "../pages/webpage";
+import { goToSignupLogin, loadPage } from "./helpers";
 
 test("Register user", async ({ page }) => {
-  await test.step("Navigate to home page and check visibility", async () => {
-  await page.goto("/");
+  const webPage = new WebPage(page);
+  
+  await loadPage(webPage);
+  
+  await goToSignupLogin(webPage);
+  
+  await checkTextElementIsVisible(webPage, "New User Signup!");
 
-  const consentButton = await page.getByRole("button", { name: "Consent" });
-  if (await consentButton.isVisible()) {
-    await consentButton.click({ force: true });
-  }
+  const userData = generateRandomUser();
 
-  await page.getByAltText("Website for automation practice").isVisible();
+  await signUp(webPage, userData);
 
-  });
-
-  await test.step("Go to Signup / Login page", async () => {
-  const signUpLink = page.getByRole("link", { name: "Signup / Login" });
-  await signUpLink.click();
-
-  });
-
-  await checkTextElementIsVisible(page, "New User Signup!");
-
-  const {name, email} = generateRandomNameAndEmail();
-
-  await test.step("Fill signup form and submit", async () => {
-  /**Functionality can be extracted until here.  */
-
-  const signupForm = await page.getByText("New User Signup!").locator("..");
-
-  await signupForm.getByRole("textbox", { name: "Name" }).fill(name);
-  await signupForm.getByRole("textbox", { name: "Email" }).fill(email);
-  await signupForm.getByRole("button", { name: "Signup" }).click();
-  });
-
-  await checkTextElementIsVisible(page, "ENTER ACCOUNT INFORMATION");
+  await checkTextElementIsVisible(webPage, "ENTER ACCOUNT INFORMATION");
 
 await test.step("Fill account information and submit", async () => {
   const title = await page.getByText("Title").locator("..").getByText(selectRandomFromArray(["Mr.", "Mrs."]));
@@ -53,8 +35,8 @@ await test.step("Fill account information and submit", async () => {
   await page.locator("#years").selectOption("1990");
   await page.getByLabel("Sign up for our newsletter!").check();
   await page.getByLabel("Receive special offers from our partners!").check();
-  await page.getByLabel("First name").fill(name.split(" ")[0]);
-  await page.getByLabel("Last name").fill(name.split(" ")[1]);
+  await page.getByLabel("First name").fill(userData.firstName);
+  await page.getByLabel("Last name").fill(userData.lastName);
   /*
   * Looking by label here conflicts with the Company field inside Address Information section.
   */
@@ -82,14 +64,14 @@ await test.step("Fill account information and submit", async () => {
   await page.getByRole("button", { name: "Create Account" }).click();
   });
 
-  await checkTextElementIsVisible(page, "ACCOUNT CREATED!");
+  await checkTextElementIsVisible(webPage, "ACCOUNT CREATED!");
 
   await test.step("Continue after account creation", async () => {
 
   await page.getByRole("link", { name: "Continue" }).click();
   
   });
- await checkTextElementIsVisible(page, `Logged in as ${name}`);
+ await checkTextElementIsVisible(webPage, `Logged in as ${name}`);
 
   await test.step("Delete account", async () => {
 
@@ -97,6 +79,6 @@ await test.step("Fill account information and submit", async () => {
   await setTimeout(2000) // Wait for 2 seconds to ensure the account deletion is processed
   });
 
-  await checkTextElementIsVisible(page, "ACCOUNT DELETED!");
+  await checkTextElementIsVisible(webPage, "ACCOUNT DELETED!");
 
 });
