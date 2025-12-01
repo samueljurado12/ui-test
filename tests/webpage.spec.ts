@@ -8,6 +8,8 @@ import {
   registerNewUserAndLogout,
   login,
   checkSuccessfulLogin,
+  checkFailureLogin,
+  logout,
 } from "./helpers";
 import { generateRandomUser, getUserFullName } from "../utils";
 
@@ -51,4 +53,23 @@ test("Login user with incorrect email and password", async ({ webPage }) => {
 
   // As we haven´t registered the user, email and password won´t exist
   await login(webPage, userData.email, userData.password);
+
+  await checkFailureLogin(webPage);
+});
+
+test("Logout user", async ({ webPage }) => {
+  const userData = generateRandomUser();
+  /*
+   * We need to register an user before testing logout functionality,
+   * we won´t check anything until the user is registered
+   */
+  await registerNewUserAndLogout(webPage, userData);
+
+  await loadPage(webPage);
+
+  await login(webPage, userData.email, userData.password);
+
+  await checkSuccessfulLogin(webPage, getUserFullName(userData));
+
+  await logout(webPage);
 });
