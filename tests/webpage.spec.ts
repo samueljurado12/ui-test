@@ -1,44 +1,30 @@
 import { test } from "./fixtures";
 import {
-  checkTextElementIsVisible,
-  continueAfterAccountCreation,
+  confirmAccountCreation,
   deleteUser,
   fillSignupDetails,
   signUp,
-  goToSignupLogin,
   loadPage,
   registerNewUserAndLogout,
   login,
+  checkSuccessfulLogin,
 } from "./helpers";
 import { generateRandomUser, getUserFullName } from "../utils";
 
 test("Register user", async ({ webPage }) => {
-  await webPage.load();
-
-  await goToSignupLogin(webPage);
-
-  await checkTextElementIsVisible(webPage, "New User Signup!");
-
   const userData = generateRandomUser();
+
+  await webPage.load();
 
   await signUp(webPage, userData);
 
-  await checkTextElementIsVisible(webPage, "ENTER ACCOUNT INFORMATION");
-
   await fillSignupDetails(webPage, userData);
 
-  await checkTextElementIsVisible(webPage, "ACCOUNT CREATED!");
+  await confirmAccountCreation(webPage);
 
-  await continueAfterAccountCreation(webPage);
-
-  await checkTextElementIsVisible(
-    webPage,
-    `Logged in as ${getUserFullName(userData)}`
-  );
+  await checkSuccessfulLogin(webPage, getUserFullName(userData));
 
   await deleteUser(webPage);
-
-  await checkTextElementIsVisible(webPage, "ACCOUNT DELETED!");
 });
 
 test("Login user with correct email and password", async ({ webPage }) => {
@@ -51,18 +37,11 @@ test("Login user with correct email and password", async ({ webPage }) => {
 
   await loadPage(webPage);
 
-  await goToSignupLogin(webPage);
-  await checkTextElementIsVisible(webPage, "Login to your account");
-
   await login(webPage, userData.email, userData.password);
 
-  await checkTextElementIsVisible(
-    webPage,
-    `Logged in as ${getUserFullName(userData)}`
-  );
+  await checkSuccessfulLogin(webPage, getUserFullName(userData));
 
   await deleteUser(webPage);
-  await checkTextElementIsVisible(webPage, "ACCOUNT DELETED!");
 });
 
 test("Login user with incorrect email and password", async ({ webPage }) => {
@@ -70,13 +49,6 @@ test("Login user with incorrect email and password", async ({ webPage }) => {
 
   await loadPage(webPage);
 
-  await goToSignupLogin(webPage);
-  await checkTextElementIsVisible(webPage, "Login to your account");
   // As we haven´t registered the user, email and password won´t exist
   await login(webPage, userData.email, userData.password);
-
-  await checkTextElementIsVisible(
-    webPage,
-    "Your email or password is incorrect!"
-  );
 });

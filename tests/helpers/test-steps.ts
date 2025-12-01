@@ -2,7 +2,10 @@ import test, { expect } from "@playwright/test";
 import { WebPage } from "../../pages";
 import { UserData } from "../../models";
 import { getUserFullName } from "../../utils";
-import { registerNewUser } from "./test-steps-helpers";
+import {
+  checkTextElementIsVisible,
+  registerNewUser,
+} from "./test-steps-helpers";
 
 export const loadPage = async (page: WebPage) => {
   await test.step("Navigate to home page and check visibility", async () => {
@@ -12,26 +15,24 @@ export const loadPage = async (page: WebPage) => {
   });
 };
 
-export const goToSignupLogin = async (page: WebPage) => {
-  await test.step("Go to Signup / Login page", async () => {
-    page.goToSignupLogin();
-  });
-};
-
 export const signUp = async (page: WebPage, user: UserData) => {
-  await test.step("Fill signup form and submit", async () => {
+  await test.step("Go to Signup / Login and sign up a new user", async () => {
+    await page.goToSignupLogin();
+    await checkTextElementIsVisible(page, "New User Signup!");
     await page.signUp(getUserFullName(user), user.email);
   });
 };
 
 export const fillSignupDetails = async (page: WebPage, userData: UserData) => {
   await test.step("Fill account information and submit", async () => {
-    page.fillSignupDetails(userData);
+    await checkTextElementIsVisible(page, "ENTER ACCOUNT INFORMATION");
+    await page.fillSignupDetails(userData);
   });
 };
 
-export const continueAfterAccountCreation = async (page: WebPage) => {
-  await test.step("Continue after account creation", async () => {
+export const confirmAccountCreation = async (page: WebPage) => {
+  await test.step("Check account created succesfully and click continue", async () => {
+    await checkTextElementIsVisible(page, "ACCOUNT CREATED!");
     await page.clickContinueAfterAccountCreation();
   });
 };
@@ -47,25 +48,23 @@ export const registerNewUserAndLogout = async (
 };
 
 export const login = async (page: WebPage, email: string, password: string) =>
-  await test.step("Login user with provided credentials", async () => {
+  await test.step("Go to Signup / Login and login user with provided credentials", async () => {
+    await page.goToSignupLogin();
+    await checkTextElementIsVisible(page, "Login to your account");
     await page.login(email, password);
   });
 
 export const deleteUser = async (page: WebPage) => {
   await test.step("Delete account", async () => {
     await page.deleteAccount();
+    await checkTextElementIsVisible(page, "ACCOUNT DELETED!");
   });
 };
 
-export const checkTextElementIsVisible = async (
+export const checkSuccessfulLogin = async (
   page: WebPage,
-  text: string
-) => {
-  await test.step(`Check expected text "${text}" is visible`, async () => {
-    const locatorToCheck = await page.findElementByText(text);
-    if (!locatorToCheck) {
-      throw new Error(`Text "${text}" not found on the page.`);
-    }
-    await expect(locatorToCheck).toBeVisible();
-  });
-};
+  userFullName: string
+) => await checkTextElementIsVisible(page, `Logged in as ${userFullName}`);
+
+export const checkFailureLogin = async (page: WebPage) =>
+  await checkTextElementIsVisible(page, "Your email or password is incorrect!");
