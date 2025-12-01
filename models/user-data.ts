@@ -8,7 +8,7 @@ export interface UserData {
   password: string;
   dateOfBirth?: {
     day: number;
-    month: number;
+    month: string;
     year: number;
   };
   address: Address;

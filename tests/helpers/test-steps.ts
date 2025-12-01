@@ -23,6 +23,33 @@ export const signUp = async (page: WebPage, user: UserData) => {
   });
 };
 
+export const fillSignupDetails = async (page: WebPage, userData: UserData) => {
+  await test.step("Fill account information and submit", async () => {
+    page.fillSignupDetails(userData);
+  });
+};
+
+export const continueAfterAccountCreation = async (page: WebPage) => {
+  await test.step("Continue after account creation", async () => {
+    await page.clickContinueAfterAccountCreation();
+  });
+};
+
+export const registerNewUser = async (page: WebPage, userData: UserData) => {
+  await test.step("Register new user", async () => {
+    await page.goToSignupLogin();
+    await page.signUp(getUserFullName(userData), userData.email);
+    await page.fillSignupDetails(userData);
+    await page.clickContinueAfterAccountCreation();
+  });
+};
+
+export const deleteUser = async (page: WebPage) => {
+  await test.step("Delete account", async () => {
+    await page.deleteAccount();
+  });
+};
+
 export const checkTextElementIsVisible = async (
   page: WebPage,
   text: string

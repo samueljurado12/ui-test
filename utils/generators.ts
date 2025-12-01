@@ -48,6 +48,18 @@ const generateRandomPhoneNumber = (): string => {
   return `${areaCode}-${centralOfficeCode}-${lineNumber}`;
 };
 
+const generateRandomDateOfBirth = (startDate: Date, endDate: Date) => {
+  var date = new Date(
+    startDate.getSeconds() +
+      Math.random() * (endDate.getSeconds() - startDate.getSeconds())
+  );
+  return {
+    day: date.getDate(),
+    month: date.toLocaleString("en-us", { month: "long" }),
+    year: date.getFullYear(),
+  };
+};
+
 export const generateRandomUser = (): UserData => {
   const [firstName, lastName] = loremIpsum.generateWords(2).split(" ");
   return {
@@ -60,5 +72,9 @@ export const generateRandomUser = (): UserData => {
     email: generateEmailBasedOnName(firstName, lastName),
     address: generateRandomAddress(),
     phoneNumber: generateRandomPhoneNumber(),
+    dateOfBirth: generateRandomDateOfBirth(
+      new Date(1950, 0, 1),
+      new Date(2010, 12, 31)
+    ),
   };
 };
