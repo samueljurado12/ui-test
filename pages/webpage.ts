@@ -101,6 +101,16 @@ export class WebPage {
     await this.page.getByRole("link", { name: "Continue" }).click();
   };
 
+  login = async (email: string, password: string) => {
+    const loginForm = await this.page
+      .getByText("Login to your account")
+      .locator("..");
+
+    await loginForm.getByRole("textbox", { name: "Email" }).fill(email);
+    await loginForm.getByRole("textbox", { name: "Password" }).fill(email);
+    await loginForm.getByRole("button", { name: "Login" }).click();
+  };
+
   deleteAccount = async () => {
     await this.page.getByRole("link", { name: "Delete Account" }).click();
     await setTimeout(2000); // Wait for 2 seconds to ensure the account deletion is processed
