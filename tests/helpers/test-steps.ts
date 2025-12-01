@@ -2,6 +2,7 @@ import test, { expect } from "@playwright/test";
 import { WebPage } from "../../pages";
 import { UserData } from "../../models";
 import { getUserFullName } from "../../utils";
+import { registerNewUser } from "./test-steps-helpers";
 
 export const loadPage = async (page: WebPage) => {
   await test.step("Navigate to home page and check visibility", async () => {
@@ -35,14 +36,20 @@ export const continueAfterAccountCreation = async (page: WebPage) => {
   });
 };
 
-export const registerNewUser = async (page: WebPage, userData: UserData) => {
-  await test.step("Register new user before test", async () => {
-    await page.goToSignupLogin();
-    await page.signUp(getUserFullName(userData), userData.email);
-    await page.fillSignupDetails(userData);
-    await page.clickContinueAfterAccountCreation();
+export const registerNewUserAndLogout = async (
+  page: WebPage,
+  userData: UserData
+) => {
+  await test.step("Register new user and logging out before test", async () => {
+    await registerNewUser(page, userData);
+    await page.logout();
   });
 };
+
+export const login = async (page: WebPage, email: string, password: string) =>
+  await test.step("Login user with provided credentials", async () => {
+    await page.login(email, password);
+  });
 
 export const deleteUser = async (page: WebPage) => {
   await test.step("Delete account", async () => {

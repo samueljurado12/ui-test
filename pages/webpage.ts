@@ -13,6 +13,10 @@ export class WebPage {
     });
   }
 
+  goToSignupLogin = async () => await this.signupLoginLink.click();
+
+  findElementByText = async (text: string) => await this.page.getByText(text);
+
   load = async () => {
     await this.page.goto("/");
 
@@ -107,16 +111,17 @@ export class WebPage {
       .locator("..");
 
     await loginForm.getByRole("textbox", { name: "Email" }).fill(email);
-    await loginForm.getByRole("textbox", { name: "Password" }).fill(email);
+    await loginForm.getByRole("textbox", { name: "Password" }).fill(password);
     await loginForm.getByRole("button", { name: "Login" }).click();
+  };
+
+  logout = async () => {
+    await this.page.getByRole("link", { name: "Logout" }).click();
+    await setTimeout(2000); // Wait for 2 seconds to ensure the logout is processed
   };
 
   deleteAccount = async () => {
     await this.page.getByRole("link", { name: "Delete Account" }).click();
     await setTimeout(2000); // Wait for 2 seconds to ensure the account deletion is processed
   };
-
-  goToSignupLogin = async () => await this.signupLoginLink.click();
-
-  findElementByText = async (text: string) => await this.page.getByText(text);
 }
