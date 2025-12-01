@@ -54,6 +54,13 @@ export const login = async (page: WebPage, email: string, password: string) =>
     await page.login(email, password);
   });
 
+export const logout = async (page: WebPage) => {
+  await test.step("Logout user", async () => {
+    await page.logout();
+    await checkTextElementIsVisible(page, "Login to your account");
+  });
+};
+
 export const deleteUser = async (page: WebPage) => {
   await test.step("Delete account", async () => {
     await page.deleteAccount();
@@ -68,3 +75,6 @@ export const checkSuccessfulLogin = async (
 
 export const checkFailureLogin = async (page: WebPage) =>
   await checkTextElementIsVisible(page, "Your email or password is incorrect!");
+
+export const checkFailureSignUp = async (page: WebPage) =>
+  await checkTextElementIsVisible(page, "Email address already exist!");
