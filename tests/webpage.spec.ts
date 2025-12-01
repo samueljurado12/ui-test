@@ -64,3 +64,19 @@ test("Login user with correct email and password", async ({ webPage }) => {
   await deleteUser(webPage);
   await checkTextElementIsVisible(webPage, "ACCOUNT DELETED!");
 });
+
+test("Login user with incorrect email and password", async ({ webPage }) => {
+  const userData = generateRandomUser();
+
+  await loadPage(webPage);
+
+  await goToSignupLogin(webPage);
+  await checkTextElementIsVisible(webPage, "Login to your account");
+  // As we haven´t registered the user, email and password won´t exist
+  await login(webPage, userData.email, userData.password);
+
+  await checkTextElementIsVisible(
+    webPage,
+    "Your email or password is incorrect!"
+  );
+});
