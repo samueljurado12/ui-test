@@ -1,21 +1,21 @@
-import { test } from "@playwright/test";
-import { generateRandomUser, selectRandomFromArray } from "../utils";
+import { test } from "./fixtures";
 import {
   checkTextElementIsVisible,
   continueAfterAccountCreation,
   deleteUser,
   fillSignupDetails,
   signUp,
+  goToSignupLogin,
+  loadPage,
+  registerNewUser,
 } from "./helpers";
-import { WebPage } from "../pages/webpage";
-import { goToSignupLogin, loadPage } from "./helpers";
-import { getUserFullName } from "../utils/utils";
+import { generateRandomUser, getUserFullName } from "../utils";
 
-test("Register user", async ({ page }) => {
-  const webPage = new WebPage(page);
-
+test.beforeEach(async ({ webPage }) => {
   await loadPage(webPage);
+});
 
+test("Register user", async ({ webPage }) => {
   await goToSignupLogin(webPage);
 
   await checkTextElementIsVisible(webPage, "New User Signup!");

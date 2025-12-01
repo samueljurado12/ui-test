@@ -1,7 +1,7 @@
 import test, { expect } from "@playwright/test";
 import { WebPage } from "../../pages";
 import { UserData } from "../../models";
-import { getUserFullName } from "../../utils/utils";
+import { getUserFullName } from "../../utils";
 
 export const loadPage = async (page: WebPage) => {
   await test.step("Navigate to home page and check visibility", async () => {
@@ -36,7 +36,7 @@ export const continueAfterAccountCreation = async (page: WebPage) => {
 };
 
 export const registerNewUser = async (page: WebPage, userData: UserData) => {
-  await test.step("Register new user", async () => {
+  await test.step("Register new user before test", async () => {
     await page.goToSignupLogin();
     await page.signUp(getUserFullName(userData), userData.email);
     await page.fillSignupDetails(userData);
