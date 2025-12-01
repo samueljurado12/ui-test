@@ -75,3 +75,6 @@ export const checkSuccessfulLogin = async (
 
 export const checkFailureLogin = async (page: WebPage) =>
   await checkTextElementIsVisible(page, "Your email or password is incorrect!");
+
+export const checkFailureSignUp = async (page: WebPage) =>
+  await checkTextElementIsVisible(page, "Email address already exist!");
